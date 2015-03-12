@@ -56,11 +56,11 @@ public class MyActivity extends ActionBarActivity {
                     }
                 )
                 .setNegativeButton(
-                    "CANCLE", new View.OnClickListener() {
+                    "CANCEL", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             mMaterialDialog.dismiss();
-                            Toast.makeText(MyActivity.this, "Cancle", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MyActivity.this, "Cancel", Toast.LENGTH_LONG).show();
                         }
                     }
                 )
@@ -168,6 +168,22 @@ public class MyActivity extends ActionBarActivity {
                         }
                     );
 
+                alert.show();
+                break;
+            }
+            case R.id.button_set_contentViewById: {
+                final MaterialDialog alert = new MaterialDialog(this)
+                        .setTitle("MaterialDialog")
+                        .setContentView(R.layout.custom_message_content);
+
+                alert.setPositiveButton(
+                        "OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alert.dismiss();
+                            }
+                        }
+                );
                 alert.show();
                 break;
             }

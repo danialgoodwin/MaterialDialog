@@ -48,6 +48,7 @@ public class MaterialDialog {
     private Drawable                          mBackgroundDrawable;
     private int                               mBackgroundResId;
     private View                              mMessageContentView;
+    private int                               mMessageContentViewResId;
     private DialogInterface.OnDismissListener mOnDismissListener;
 
     public MaterialDialog(Context context) {
@@ -72,8 +73,23 @@ public class MaterialDialog {
 
     public MaterialDialog setContentView(View view) {
         mMessageContentView = view;
+        mMessageContentViewResId = 0;
         if (mBuilder != null) {
             mBuilder.setContentView(mMessageContentView);
+        }
+        return this;
+    }
+
+    /**
+     * Set a custom view resource to be the contents of the dialog.
+     *
+     * @param layoutResId resource ID to be inflated
+     */
+    public MaterialDialog setContentView(int layoutResId) {
+        mMessageContentViewResId = layoutResId;
+        mMessageContentView = null;
+        if (mBuilder != null) {
+            mBuilder.setContentView(layoutResId);
         }
         return this;
     }
@@ -248,6 +264,7 @@ public class MaterialDialog {
     private class Builder {
 
         private TextView     mTitleView;
+        private ViewGroup    mMessageContentRoot;
         private TextView     mMessageView;
         private Window       mAlertDialogWindow;
         private LinearLayout mButtonLayout;
@@ -279,6 +296,7 @@ public class MaterialDialog {
             );
 
             mTitleView = (TextView) mAlertDialogWindow.findViewById(R.id.title);
+            mMessageContentRoot = (ViewGroup) mAlertDialogWindow.findViewById(R.id.message_content_root);
             mMessageView = (TextView) mAlertDialogWindow.findViewById(R.id.message);
             mButtonLayout = (LinearLayout) mAlertDialogWindow.findViewById(R.id.buttonLayout);
             if (mView != null) {
@@ -325,6 +343,8 @@ public class MaterialDialog {
 
             if (mMessageContentView != null) {
                 this.setContentView(mMessageContentView);
+            } else if (mMessageContentViewResId != 0) {
+                this.setContentView(mMessageContentViewResId);
             }
             mAlertDialog.setCanceledOnTouchOutside(mCancel);
             if (mOnDismissListener != null) {
@@ -341,11 +361,15 @@ public class MaterialDialog {
         }
 
         public void setMessage(int resId) {
-            mMessageView.setText(resId);
+            if (mMessageView != null) {
+                mMessageView.setText(resId);
+            }
         }
 
         public void setMessage(CharSequence message) {
-            mMessageView.setText(message);
+            if (mMessageView != null) {
+                mMessageView.setText(message);
+            }
         }
 
         /**
@@ -464,6 +488,19 @@ public class MaterialDialog {
             }
         }
 
+        /**
+         * Set a custom view resource to be the contents of the dialog. The
+         * resource will be inflated into a ScrollView.
+         *
+         * @param layoutResId resource ID to be inflated
+         */
+        public void setContentView(int layoutResId) {
+            mMessageContentRoot.removeAllViews();
+            // Not setting this to the other content view because user has defined their own
+            // layout params, and we don't want to overwrite those.
+            LayoutInflater.from(mMessageContentRoot.getContext()).inflate(layoutResId, mMessageContentRoot);
+        }
+
         public void setBackground(Drawable drawable) {
             LinearLayout linearLayout = (LinearLayout) mAlertDialogWindow.findViewById(R.id.material_background);
             linearLayout.setBackground(drawable);
@@ -479,7 +516,6 @@ public class MaterialDialog {
             mAlertDialog.setCanceledOnTouchOutside(canceledOnTouchOutside);
         }
     }
-<<<<<<< HEAD
 
     /**
      * 动态测量listview-Item的高度
@@ -505,6 +541,3 @@ public class MaterialDialog {
     }
 
 }
-=======
-}
->>>>>>> origin/master
